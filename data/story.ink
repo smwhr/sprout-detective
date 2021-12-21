@@ -1,4 +1,4 @@
-Bipsi Detective #TITLE
+Sprout Detective #TITLE
 
 -> init
 
@@ -29,3 +29,10 @@ Do you have a room here ?
 -
 Then why bother me ?
 ->->
+
+
+=== other_knot
+Day 2 #TITLE
+This is another knot
+
+-> DONE

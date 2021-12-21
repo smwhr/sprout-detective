@@ -6,7 +6,7 @@
 * Export JSON
 * Save in `data/bipsi.json`
 * Review your changes, commit and push
-* Github action should run and update the editor online
+* Github action should run and update the editor online (use the "reset" button)
 
 
 ### What happens behind the scene
@@ -24,4 +24,4 @@
 
 ## Overall
 
-* The full game is compiled in the branch `distribution` and can be [played online](https://smwhr.github.io/sprout-detective/play)
+* The full game is compiled in the branch `distribution` and can be [played online](https://smwhr.github.io/sprout-detective/)
