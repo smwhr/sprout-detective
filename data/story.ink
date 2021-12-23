@@ -24,15 +24,9 @@ Sprout Detective #TITLE
 === talk_to_receptionist
 Welcome to Lich Hotel.
 Do you have a room here ?
-+ yes
-+ no
++ [yes]
++ [no]
 -
 Then why bother me ?
 ->->
 
-
-=== other_knot
-Day 2 #TITLE
-This is another knot
-
--> DONE
