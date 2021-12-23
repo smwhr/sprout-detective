@@ -1,5 +1,3 @@
-fs.writeFileSync(outputfile, document.toString());
-
 'use strict';
 const fs = require('fs');
 const HTMLParser = require('node-html-parser');
