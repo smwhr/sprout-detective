@@ -10,4 +10,4 @@ People of the [Sprout Republic of Having Fun Ideas](https://discord.gg/NAUnQ5ya)
 ### Documentation
 
 * [asset pipeline](pipeline.md)
-* [binksi specifics](binksi-guide.md)
+* [binksi specifics](https://smwhr.github.io/binksi/docs/)
