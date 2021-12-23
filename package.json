@@ -14,6 +14,6 @@
     "ink": "inklecate -o data/story.ink.json data/story.ink && node build-scripts/cleanJson.js data/story.ink.json",
     "build": "mkdir -p dist && node build-scripts/makeEditor.js",
     "make-player": "mkdir -p dist && node build-scripts/makePlayer.js",
-    "dist": "mkdir -p dist/editor dist/play && mv dist/editor.html dist/editor/index.html && mv dist/player.html dist/play/index.html && cp README.md dist/README.md"
+    "dist": "mkdir -p dist/editor dist/play && mv dist/editor.html dist/editor/index.html && mv dist/player.html dist/play/index.html && cp *.md dist/*.md"
   }
 }
