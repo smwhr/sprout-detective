@@ -72,6 +72,17 @@
           "key": "page-color",
           "type": "text",
           "data": "black"
+        }, {
+          "key": "say-style",
+          "type": "json",
+          "data": {
+            "noMargin": true,
+            "anchorX": 0,
+            "anchorY": 1,
+            "lines": 3,
+            "panelColor": "#2d1b00",
+            "textColor": "#c4f0c2"
+          }
         }]
       }, {
         "id": 9,
@@ -84,10 +95,6 @@
           "key": "solid",
           "type": "tag",
           "data": true
-        }, {
-          "key": "say",
-          "type": "dialogue",
-          "data": "hello"
         }]
       }, {
         "id": 10,
@@ -152,6 +159,26 @@
         "position": [3, 6],
         "fields": [{
           "key": "behind-desk-pushback",
+          "type": "tag",
+          "data": true
+        }]
+      }, {
+        "id": 41,
+        "position": [2, 11],
+        "fields": [{
+          "key": "graphic",
+          "type": "tile",
+          "data": 7
+        }, {
+          "key": "solid",
+          "type": "tag",
+          "data": true
+        }, {
+          "key": "patch",
+          "type": "file",
+          "data": "8"
+        }, {
+          "key": "cat",
           "type": "tag",
           "data": true
         }]
@@ -555,6 +582,26 @@
           "type": "tag",
           "data": true
         }]
+      }, {
+        "id": 40,
+        "position": [8, 6],
+        "fields": [{
+          "key": "graphic",
+          "type": "tile",
+          "data": 7
+        }, {
+          "key": "solid",
+          "type": "tag",
+          "data": true
+        }, {
+          "key": "patch",
+          "type": "file",
+          "data": "8"
+        }, {
+          "key": "cat",
+          "type": "tag",
+          "data": true
+        }]
       }]
     }, {
       "id": 2,
@@ -682,14 +729,14 @@
       }]
     }],
     "palettes": [
-      ["#3c6fad", "#d8d4dd", "#ff8e9e"],
-      ["#192b33", "#201f7f", "#958fbf"],
-      ["#2f1933", "#7f1f24", "#bf908f"],
-      ["#251933", "#5f1f7f", "#bf8fac"],
-      ["#193233", "#451f7f", "#bf8faf"],
-      ["#331920", "#6b7f1f", "#8fbfb0"],
-      ["#332219", "#7f651f", "#bfba8f"],
-      ["#332719", "#547f1f", "#8fbfae"]
+      ["#c4f0c2","#5ab9a8","#1e606e"],
+      ["#192b33","#201f7f","#958fbf"],
+      ["#2f1933","#7f1f24","#bf908f"],
+      ["#251933","#5f1f7f","#bf8fac"],
+      ["#193233","#451f7f","#bf8faf"],
+      ["#331920","#6b7f1f","#8fbfb0"],
+      ["#332219","#7f651f","#bfba8f"],
+      ["#332719","#547f1f","#8fbfae"]
     ],
     "tileset": "156",
     "tiles": [
@@ -720,6 +767,14 @@
     ]
   },
   "resources": {
+    "8": {
+      "type": "file-datauri",
+      "data": {
+        "name": "cat-patch.png",
+        "uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAaCAYAAACtv5zzAAAAAXNSR0IArs4c6QAAAKBJREFUSIlj1JVm+M9AQ8BES8NHLRjEFky/eoigRmLU4LSAmpbgtCBT246gAcSoYaHUAJiaTG070i2AGUAJwAgifK7BBigKImIMhDkGl8Pw5gNiwp8QwGsBpeHPwEBCEMGCgFRLiS4qyPUNQQtg8YBOo6vB5QAMC9AzF3JGwmYQoYTAiKvKJJQfYAYTCjqcFhByHbFxgtcCaoBhWqMNKQsAKjVN31Vy5DsAAAAASUVORK5CYII=",
+        "type": "image/png"
+      }
+    },
     "156": {
       "type": "canvas-datauri",
       "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAYCAYAAAAyC/XlAAAAAXNSR0IArs4c6QAAAotJREFUaEPtWu1ywzAIW97/obNLb+yYKkAxSTtv3p81ccB8CJCbbh/ub9/3/bjctm2z23bPP+c/+2ejZ6r70R6H7mp/tBf9qeyr9Js8Phfdr3y9Yz3ykeXzKT4KALINqgB3HT6cQCD46ypBHsj+WfYZbbW9j/vZZyyIDNCmi8VlBFSZjLL2XeneMOwArBLtXvYfg++D6IPa6QB+/6z6swqu/GNJY8GtAu4rktmjrjPAnS1Ey0XY6rFCIoNZdbKKMaMZuLIu4fdV9mIVX1Ww0uGqEYCFkPmUjbZoDbsegqUFgKoCqwrBJCkAwJYatURlRmNnwf0rAFyZrCy5xldUn6LRwsAwDAA2Y9HQMwCIKh2DrBqscIAuAFhnyTpPlsiR6lbjHfE1NlpNZzXaf4yALklCxDKDVYCcrRYEVMQ3qu7EupnSQRigI12MU7CERZ3p0g7AZqbSnjGREUuu9GftFwPV5QAMoEo7VgBQ+XHXekSCq/2eSGAlEK1XAaz0qqOg0sPW2WjIutLIHr5yR23IYlD5kNlcyT7WR52eQU4JwLsTqNg4WiSS7hkSOWqjEoAFgK/oRqQpI1PYTtkZ/53yyFPYLDcAjPrvTykj/nflGcdi3CnkYoy8oVHsmgVOkcsY7KvlESCRn+ir8R4kYL9RHr+geiLSGcPNKtzLVScA3APReJd8pZcd09ROEFXZq+UjECp5XSSQvP1EvqHwiA6L7+qf/hTQPUaOEkQv101g14bO/m0AdBMwekTpBm3JXxOB9HuAO9vTNeYvLd0ILAB0Izi5PH0ZdOoc6X4+Nnks/qX5j9/c4VtA5TyOZ+h/Gb0/4PSjA0TnZeUcvUjg3ChYHGDu/LWtXwBoh3BuBZ+t06hAQ6EArQAAAABJRU5ErkJggg=="
