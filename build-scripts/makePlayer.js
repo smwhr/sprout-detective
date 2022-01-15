@@ -16,6 +16,7 @@ const story = JSON.parse(inkstory);
 
 document.querySelectorAll("[data-editor-only]").forEach((element) => element.remove());
 document.setAttribute("data-app-mode", "player");
+document.querySelector("#player").removeAttribute("hidden");
 document.querySelector("#bundle-embed").innerHTML = JSON.stringify(bundle);
 document.querySelector("#story-embed").innerHTML = JSON.stringify(story);
 
