@@ -4752,7 +4752,7 @@ class BipsiEditor extends EventTarget {
         // this.roomPaintTool.tab(ONE("#room-events-tab"), "events");
         this.roomPaintTool.tab(ONE("#room-events-toolbar"), "events");
 
-        this.roomPaintTool.tab(ONE("#draw-room-tile-select"), "tile", "high", "pick", "shift", "wall");
+        this.roomPaintTool.tab(ONE("#draw-room-tile-select"), "tile", "high", "pick");
         this.roomPaintTool.tab(ONE("#room-palette-select"), "tile", "high", "pick", "shift", "wall");
 
         this.roomGrid = ui.toggle("room-grid");
@@ -4912,7 +4912,16 @@ class BipsiEditor extends EventTarget {
             this.redraw();
             this.redrawTileBrowser();
 
-            this.renderings.tileMapPaint.canvas.style.cursor = this.roomPaintTool.value === "events" ? "pointer" : "crosshair";
+            const cursors = {
+                "tile": "crosshair",
+                "high": "crosshair",
+                "pick": "crosshair",
+                "wall": "crosshair",
+                "events": "pointer",
+                "shift": "move"
+            }
+
+            this.renderings.tileMapPaint.canvas.style.cursor = cursors[this.roomPaintTool.value];
         });
 
         this.tileBrowser.select.addEventListener("change", () => {
@@ -5347,6 +5356,14 @@ class BipsiEditor extends EventTarget {
         this.fieldRoomSelect.updateRooms(thumbs);
 
         this.roomSelectWindow.select.selectedIndex = Math.max(this.roomSelectWindow.select.selectedIndex, 0);
+
+        const thumb = thumbs[this.roomSelectWindow.select.selectedIndex].thumb;
+        const canvases = ALL(`[name="show-room-window"] + canvas`);
+        canvases.forEach((canvas) => {
+            const rendering = canvas.getContext("2d");
+            rendering.imageSmoothingEnabled = false;
+            rendering.drawImage(thumb, 0, 0, 16, 16);
+        });
     }
 
     redrawDialoguePreview() {
@@ -6543,6 +6560,7 @@ body {
     --frame-color: #ECECEC;
 
     --black-outline-shadow: 0 0 0 2px black;
+    --white-outline-shadow: 0 0 0 2px white;
 }
 
 :root[data-app-mode="editor"] [data-hidden-in-editor] {
@@ -6887,11 +6905,16 @@ label.toggle {
     position: relative;
 }
 
-input + svg, input + svg + svg {
+input + *, input + * + * {
     z-index: 6;
 }
 
-input + svg + svg {
+.picker-toggle > canvas {
+    width: 32px;
+    height: 32px;
+}
+
+.picker-toggle > * + * + svg {
     margin-left: 4px;
     margin-right: -4px;
 }
@@ -6906,8 +6929,27 @@ label.toggle#tile-grid {
 
 label.room-picker-toggle {
     flex: 0;
-    min-width: 72px;
+    /* min-width: 72px; */
+    border-radius: .5rem 1rem 1rem .5rem;
+    padding: 8px;
+    gap: 6px;
 }
+
+label.room-picker-toggle > svg {
+    margin: 0;
+    margin-left: 2px;
+}
+
+.picker-toggle > canvas {
+    border-radius: .25rem;
+    box-shadow: var(--black-outline-shadow);
+    pointer-events: none;
+}
+
+.picker-toggle > *:checked + canvas {
+    box-shadow: var(--white-outline-shadow);
+}
+
 
 .toggle input {
     appearance: none;
@@ -6933,7 +6975,7 @@ label.room-picker-toggle {
     background: blue;
 }
 
-.toggle input:checked + svg, .toggle input:checked + svg + svg {
+.toggle input:checked + svg, .toggle input:checked + * + svg {
     color: white;
 }
 
@@ -7206,7 +7248,7 @@ label.room-picker-toggle {
 
     display: flex; flex-direction: column;
 
-    border-radius: 1rem 0 0 1rem;
+    border-radius: .5rem 0 0 .5rem;
     background: black;
     overflow: hidden scroll;
 }
@@ -7431,8 +7473,12 @@ label.room-picker-toggle {
 
 #field-position-select {
     background: var(--trans-gradient);
-
+    cursor: pointer;
     height: 236px;
+}
+
+#move-to-window-position {
+    cursor: pointer;
 }
 
 #tile-paint-buttons > * {
@@ -7822,13 +7868,13 @@ label.room-picker-toggle {
               <input type="radio" name="mode-select" value="playtest" title="playtest" autocomplete="off"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"></path></svg>
             </label>
             <label>
-              <input type="radio" name="mode-select" value="palettes" title="palettes"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm4 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM5.5 7a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"></path><path d="M16 8c0 3.15-1.866 2.585-3.567 2.07C11.42 9.763 10.465 9.473 10 10c-.603.683-.475 1.819-.351 2.92C9.826 14.495 9.996 16 8 16a8 8 0 1 1 8-8zm-8 7c.611 0 .654-.171.655-.176.078-.146.124-.464.07-1.119-.014-.168-.037-.37-.061-.591-.052-.464-.112-1.005-.118-1.462-.01-.707.083-1.61.704-2.314.369-.417.845-.578 1.272-.618.404-.038.812.026 1.16.104.343.077.702.186 1.025.284l.028.008c.346.105.658.199.953.266.653.148.904.083.991.024C14.717 9.38 15 9.161 15 8a7 7 0 1 0-7 7z"></path></svg>
+              <input type="radio" name="mode-select" value="palettes" title="edit palettes"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm4 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM5.5 7a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"></path><path d="M16 8c0 3.15-1.866 2.585-3.567 2.07C11.42 9.763 10.465 9.473 10 10c-.603.683-.475 1.819-.351 2.92C9.826 14.495 9.996 16 8 16a8 8 0 1 1 8-8zm-8 7c.611 0 .654-.171.655-.176.078-.146.124-.464.07-1.119-.014-.168-.037-.37-.061-.591-.052-.464-.112-1.005-.118-1.462-.01-.707.083-1.61.704-2.314.369-.417.845-.578 1.272-.618.404-.038.812.026 1.16.104.343.077.702.186 1.025.284l.028.008c.346.105.658.199.953.266.653.148.904.083.991.024C14.717 9.38 15 9.161 15 8a7 7 0 1 0-7 7z"></path></svg>
             </label>
             <label>
-              <input type="radio" name="mode-select" value="draw-tiles" title="draw tiles"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path></svg>
+              <input type="radio" name="mode-select" value="draw-tiles" title="edit tiles"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path></svg>
             </label>
             <label>
-              <input type="radio" name="mode-select" value="draw-room" title="draw room"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13zM1.5 1a.5.5 0 0 0-.5.5V5h4V1H1.5zM5 6H1v4h4V6zm1 4h4V6H6v4zm-1 1H1v3.5a.5.5 0 0 0 .5.5H5v-4zm1 0v4h4v-4H6zm5 0v4h3.5a.5.5 0 0 0 .5-.5V11h-4zm0-1h4V6h-4v4zm0-5h4V1.5a.5.5 0 0 0-.5-.5H11v4zm-1 0V1H6v4h4z"></path></svg>
+              <input type="radio" name="mode-select" value="draw-room" title="edit rooms"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13zM1.5 1a.5.5 0 0 0-.5.5V5h4V1H1.5zM5 6H1v4h4V6zm1 4h4V6H6v4zm-1 1H1v3.5a.5.5 0 0 0 .5.5H5v-4zm1 0v4h4v-4H6zm5 0v4h3.5a.5.5 0 0 0 .5-.5V11h-4zm0-1h4V6h-4v4zm0-5h4V1.5a.5.5 0 0 0-.5-.5H11v4zm-1 0V1H6v4h4z"></path></svg>
             </label>
           </div>
           <div class="button-row" id="undo-row">
@@ -7974,10 +8020,9 @@ label.room-picker-toggle {
             </div>
           </div>
           <div class="viewport-toolbar">
-            <label class="toggle picker-toggle">
-              <input type="checkbox" name="show-room-window" title="switch room"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z"></path>
-</svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16"><path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path></svg>
+            <label class="toggle picker-toggle room-picker-toggle">
+              <input type="checkbox" name="show-room-window" title="switch room">
+              <canvas width="16" height="16"></canvas><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16"><path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path></svg>
             </label>
           </div>
         </div>
@@ -7999,10 +8044,9 @@ label.room-picker-toggle {
             </div>
           </div>
           <div class="viewport-toolbar">
-            <label class="toggle picker-toggle">
-              <input type="checkbox" name="show-room-window" title="switch room"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z"></path>
-</svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16"><path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path></svg>
+            <label class="toggle picker-toggle room-picker-toggle">
+              <input type="checkbox" name="show-room-window" title="switch room">
+              <canvas width="16" height="16"></canvas><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16"><path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path></svg>
             </label>
           </div>
         </div>
@@ -8132,10 +8176,9 @@ label.room-picker-toggle {
             </div>
           </div>
           <div class="viewport-toolbar">
-            <label class="toggle picker-toggle">
-              <input type="checkbox" name="show-room-window" title="switch room"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z"></path>
-</svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16"><path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path></svg>
+            <label class="toggle picker-toggle room-picker-toggle">
+              <input type="checkbox" name="show-room-window" title="switch room">
+              <canvas width="16" height="16"></canvas><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16"><path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"></path></svg>
             </label>
             <select id="room-palette-select" name="room-palette">
               <option value="0">palette 0</option>
