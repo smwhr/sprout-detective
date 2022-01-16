@@ -182,6 +182,22 @@
           "type": "tag",
           "data": true
         }]
+      }, {
+        "id": 42,
+        "position": [5, 2],
+        "fields": [{
+          "key": "graphic",
+          "type": "tile",
+          "data": 25
+        }, {
+          "key": "solid",
+          "type": "tag",
+          "data": true
+        }, {
+          "key": "say",
+          "type": "dialogue",
+          "data": "hello"
+        }]
       }],
       "backmap": [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -588,7 +604,7 @@
         "fields": [{
           "key": "graphic",
           "type": "tile",
-          "data": 7
+          "data": 25
         }, {
           "key": "solid",
           "type": "tag",
@@ -729,16 +745,16 @@
       }]
     }],
     "palettes": [
-      ["#c4f0c2","#5ab9a8","#1e606e"],
-      ["#192b33","#201f7f","#958fbf"],
-      ["#2f1933","#7f1f24","#bf908f"],
-      ["#251933","#5f1f7f","#bf8fac"],
-      ["#193233","#451f7f","#bf8faf"],
-      ["#331920","#6b7f1f","#8fbfb0"],
-      ["#332219","#7f651f","#bfba8f"],
-      ["#332719","#547f1f","#8fbfae"]
+      ["#c4f0c2", "#5ab9a8", "#1e606e"],
+      ["#192b33", "#201f7f", "#958fbf"],
+      ["#2f1933", "#7f1f24", "#bf908f"],
+      ["#251933", "#5f1f7f", "#bf8fac"],
+      ["#193233", "#451f7f", "#bf8faf"],
+      ["#331920", "#6b7f1f", "#8fbfb0"],
+      ["#332219", "#7f651f", "#bfba8f"],
+      ["#332719", "#547f1f", "#8fbfae"]
     ],
-    "tileset": "156",
+    "tileset": "119",
     "tiles": [
       { "id": 1, "frames": [1] },
       { "id": 2, "frames": [5] },
@@ -755,6 +771,7 @@
       { "id": 6, "frames": [0] },
       { "id": 9, "frames": [9] },
       { "id": 7, "frames": [2, 3] },
+      { "id": 25, "frames": [34, 35] },
       { "id": 16, "frames": [16, 17] },
       { "id": 17, "frames": [18, 19] },
       { "id": 18, "frames": [20, 21] },
@@ -775,9 +792,9 @@
         "type": "image/png"
       }
     },
-    "156": {
+    "119": {
       "type": "canvas-datauri",
-      "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAYCAYAAAAyC/XlAAAAAXNSR0IArs4c6QAAAotJREFUaEPtWu1ywzAIW97/obNLb+yYKkAxSTtv3p81ccB8CJCbbh/ub9/3/bjctm2z23bPP+c/+2ejZ6r70R6H7mp/tBf9qeyr9Js8Phfdr3y9Yz3ykeXzKT4KALINqgB3HT6cQCD46ypBHsj+WfYZbbW9j/vZZyyIDNCmi8VlBFSZjLL2XeneMOwArBLtXvYfg++D6IPa6QB+/6z6swqu/GNJY8GtAu4rktmjrjPAnS1Ey0XY6rFCIoNZdbKKMaMZuLIu4fdV9mIVX1Ww0uGqEYCFkPmUjbZoDbsegqUFgKoCqwrBJCkAwJYatURlRmNnwf0rAFyZrCy5xldUn6LRwsAwDAA2Y9HQMwCIKh2DrBqscIAuAFhnyTpPlsiR6lbjHfE1NlpNZzXaf4yALklCxDKDVYCcrRYEVMQ3qu7EupnSQRigI12MU7CERZ3p0g7AZqbSnjGREUuu9GftFwPV5QAMoEo7VgBQ+XHXekSCq/2eSGAlEK1XAaz0qqOg0sPW2WjIutLIHr5yR23IYlD5kNlcyT7WR52eQU4JwLsTqNg4WiSS7hkSOWqjEoAFgK/oRqQpI1PYTtkZ/53yyFPYLDcAjPrvTykj/nflGcdi3CnkYoy8oVHsmgVOkcsY7KvlESCRn+ir8R4kYL9RHr+geiLSGcPNKtzLVScA3APReJd8pZcd09ROEFXZq+UjECp5XSSQvP1EvqHwiA6L7+qf/hTQPUaOEkQv101g14bO/m0AdBMwekTpBm3JXxOB9HuAO9vTNeYvLd0ILAB0Izi5PH0ZdOoc6X4+Nnks/qX5j9/c4VtA5TyOZ+h/Gb0/4PSjA0TnZeUcvUjg3ChYHGDu/LWtXwBoh3BuBZ+t06hAQ6EArQAAAABJRU5ErkJggg=="
+      "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAYCAYAAAAyC/XlAAAAAXNSR0IArs4c6QAAAr5JREFUaEPtWu1ywzAIW97/obtrb94xVSDFOO165/1ZGwfMhwC5yfEV/m632+3+9TiOY1we1+J98XO8N7tHXc/2uOtW+6O96I+yT+kf8nhfdl35esV65iPL51N8HABUG6gAdx2+O4FAiN9VgiKQ473sM9o69r5frz5jQVSAHrpYXGZAVck4a7+VHg3DDsAqcVyr/mPwYxBjUDsdIO5fVX9Vwco/ljQWXBXwWJHMHnedAe5sIY5cpK0eKyQzmFUnq5hhNANX1SXivs5erOJVBTsdTo0ALITKp2q0ZWvY9RAsLQCoClQVgklyAIAtNWuJzozGzoL7KwCsTFaV3MFXXJ+y0cLAMA0ANmPR0DMAyCodg+wa7HCALgBYZ6k6T5XImep2453xNTZah0412v+MgC5JQsQyg12AnK0WBFTGN1R3Yt3M6SAM0JkuxilYwrLOtLQDsJnptGdMZMaSlf6q/WKguhyAAdRpxw4AlB9XrWckWO33RAKVQLauAqj0uqNA6WHrbDRUXWlmj1i5szZUMVA+VDYr2cf6rNOfIOcE4N0JdGycLRJL9yckctZGJwAbAD/RzUhTRaawnbIz/jvlkaewWT4AMOt/PKXM+N+VZxyLcaeUizHyhkax7yxwjlzFYF8tjwDJ/ERfB+9BAvYf5fEHqiciXTHcqsKjnDoB4B6IxqvklV52THM7QVZlr5bPQOjkdZNA8vQT+YbDIzosvqv/408B3WPkLEGMct0Edm3o7N8GQDcB8ddDN6jdgG35dREofwdw21MGImTFGyDrErdK01IAMMaJZGmDYFXq1uihD4NOnSOL17bw4VI8Jo2j1Ro3tpbZCDzeuasSJc+RP+8P4hio2j+ev2eN33L9CDw6QHZeds7R6vl3PPPv9t9P2GoNSzgAm/O7A6xO1TX6lgKAvVASO0C1fo17W6uKwDc/L/xAnQVqvAAAAABJRU5ErkJggg=="
     }
   }
 }
