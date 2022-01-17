@@ -1381,6 +1381,12 @@ async function loadImage(src) {
     });
 }
 
+function loadImageLazy(src) {
+    const image = document.createElement("img");
+    image.src = src;
+    return image;
+}
+
 /**
  * In the given rendering, replace every instance of a color in the prev palette
  * with the corresponding color in the next palette, ignoring colors that don't
@@ -2913,8 +2919,8 @@ class BipsiPlayback extends EventTarget {
         return url;
     } 
 
-    async getFileImageElement(id) {
-        const image = this.imageElements.get(id) ?? await loadImage(this.getFileObjectURL(id));
+    getFileImageElement(id) {
+        const image = this.imageElements.get(id) ?? loadImageLazy(this.getFileObjectURL(id));
         this.imageElements.set(id, image);
         return image;
     }
@@ -3302,7 +3308,7 @@ class BipsiPlayback extends EventTarget {
     }
     
     async showImage(imageID, fileID, layer, x, y) {
-        const image = await this.getFileImageElement(fileID);
+        const image = this.getFileImageElement(fileID);
         this.images.set(imageID, { image, layer, x, y });
     }
 
@@ -4491,7 +4497,7 @@ class TileEditor {
 
         const redraw = () => {
             drawTile(tileset, index, temp);
-            this.redraw();
+            this.editor.redraw();
         };
 
         const drag = ui.drag(event);
@@ -4740,7 +4746,6 @@ class BipsiEditor extends EventTarget {
         
         this.modeSelect.tab(ONE("#draw-room-tab-controls"), "draw-room");
 
-        this.modeSelect.tab(ONE("#tile-buttons"), "draw-tiles")
         this.modeSelect.tab(ONE("#tile-paint-tab"), "draw-tiles");
         this.modeSelect.tab(ONE("#tile-map-tab"), "draw-room");
         this.modeSelect.tab(ONE("#palette-tab"), "palettes");
@@ -4749,10 +4754,10 @@ class BipsiEditor extends EventTarget {
         this.modeSelect.tab(ONE("#play-tab-view"), "playtest");
 
         this.roomPaintTool.tab(ONE("#draw-room-events-controls"), "events");
-        // this.roomPaintTool.tab(ONE("#room-events-tab"), "events");
         this.roomPaintTool.tab(ONE("#room-events-toolbar"), "events");
 
         this.roomPaintTool.tab(ONE("#draw-room-tile-select"), "tile", "high", "pick");
+        // this.roomPaintTool.tab(ONE("#draw-room-tile-manage"), "tile", "high", "pick");
         this.roomPaintTool.tab(ONE("#room-palette-select"), "tile", "high", "pick", "shift", "wall");
 
         this.roomGrid = ui.toggle("room-grid");
@@ -6221,6 +6226,8 @@ async function startEditor(font) {
         event.preventDefault();
         return event.returnValue = "Are you sure you want to exit?";
     });
+
+    return editor;
 }
 
 async function makePlayback(font, bundle, story) {
@@ -6411,6 +6418,9 @@ async function makePlayback(font, bundle, story) {
     return playback;
 }
 
+let PLAYBACK;
+let EDITOR;
+
 async function start() {
     const font = await loadBasicFont(ONE("#font-embed"));
 
@@ -6421,9 +6431,9 @@ async function start() {
     const story = new inkjs.Story(storyContent);
 
     if (bundle) {
-        await makePlayback(font, bundle, story);
+        PLAYBACK = await makePlayback(font, bundle, story);
     } else {
-        await startEditor(font);
+        EDITOR = await startEditor(font);
     }
 }
 
@@ -6979,18 +6989,6 @@ label.room-picker-toggle > svg {
     color: white;
 }
 
-.room-buttons {
-    display: flex; flex-direction: row;
-    gap: .5rem;
-}
-
-.room-buttons > * {
-    width: 56px;
-    height: 40px;
-
-    border-radius: .75rem;
-}
-
 .room-select {
     --room-size: calc(16px * 3);
 
@@ -7020,12 +7018,12 @@ label.room-picker-toggle > svg {
     width: 100%; height: 100%;
 }
 
-.tile-buttons {
+.item-management-buttons {
     display: flex; flex-direction: row;
     gap: .5rem;
 }
 
-.tile-buttons > * {
+.item-management-buttons > * {
     width: 56px;
     height: 40px;
 
@@ -7230,7 +7228,7 @@ label.room-picker-toggle > svg {
     display: flex; flex-direction: column;
     gap: 1rem;
 
-    /* overflow: hidden; */
+    overflow: hidden;
 }
 
 #event-properties > .row {
@@ -7693,7 +7691,7 @@ label.room-picker-toggle > svg {
 }
 
 #draw-room-events-controls {
-    flex: 1;
+    height: 100%;
     display: flex; flex-direction: column;
 }
 
@@ -7846,7 +7844,7 @@ label.room-picker-toggle > svg {
       </div>
       <div id="controls">
         <div id="room-select-window" hidden="hidden">
-          <div class="room-buttons">
+          <div class="item-management-buttons">
             <button name="add-new-room" title="add new room"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path></svg></button>
             <button name="duplicate-room" title="duplicate selected room"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z"></path></svg></button>
             <button name="reorder-room-before" title="reorder room before"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"></path></svg></button>
@@ -7907,7 +7905,7 @@ label.room-picker-toggle > svg {
                 <button name="reset" title="reset project to default">reset to default</button>
               </div>
             
-            <h2>binksi -- 0.4-alpha (2022/1/15)</h2>
+            <h2>binksi -- 0.4-alpha (2022/1/17)</h2>
             <p>propulse your <a href="https://kool.tools/bipsi/user-guide.pdf">bipsi</a> games with narration engine <a href="https://www.inklestudios.com/ink/">ink</a></p>
             <p>
               quick links to : <a href="https://kool.tools/bipsi/user-guide.pdf">bipsi user guide</a>,  <a href="https://kool.tools/bipsi/scripting-guide.pdf">bipsi scripting guide</a>,
@@ -8035,7 +8033,7 @@ label.room-picker-toggle > svg {
                 </label>
               </template>
             </div>
-            <div class="tile-buttons" id="tile-buttons">
+            <div class="item-management-buttons">
               <button name="add-new-tile" title="add new tile"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path></svg></button>
               <button name="duplicate-tile" title="duplicate selected tile"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z"></path></svg></button>
               <button name="reorder-tile-before" title="reorder tile before"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"></path></svg></button>
@@ -8058,6 +8056,13 @@ label.room-picker-toggle > svg {
                   <input type="radio" name="draw-room-tile-select">
                 </label>
               </template>
+            </div>
+            <div class="item-management-buttons" id="draw-room-tile-manage" hidden="hidden">
+              <button name="add-new-tile" title="add new tile"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path></svg></button>
+              <button name="duplicate-tile" title="duplicate selected tile"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z"></path></svg></button>
+              <button name="reorder-tile-before" title="reorder tile before"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"></path></svg></button>
+              <button name="reorder-tile-after" title="reorder tile after"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"></path></svg></button>
+              <button name="delete-tile" title="delete selected tile"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path></svg></button>
             </div>
             <div id="draw-room-events-controls" hidden="hidden">
               <div id="event-empty" hidden="hidden">
