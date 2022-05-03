@@ -41,7 +41,7 @@
       ],
       "events": [{
         "id": 8,
-        "position": [6, 15],
+        "position": [6, 14],
         "fields": [{
           "key": "is-player",
           "type": "tag",
@@ -81,11 +81,22 @@
             "panelColor": "#2d1b00",
             "textColor": "#c4f0c2"
           }
+        }, {
+          "key": "colors",
+          "type": "colors",
+          "data": {
+            "fg": 3,
+            "bg": 1
+          }
         }]
       }, {
         "id": 9,
         "position": [9, 7],
         "fields": [{
+          "key": "john",
+          "type": "tag",
+          "data": true
+        }, {
           "key": "graphic",
           "type": "tile",
           "data": 9
@@ -217,31 +228,35 @@ TURN_EVENT(avatar, "down")
         }]
       }, {
         "id": 58,
-        "position": [7, 9],
+        "position": [5, 1],
         "fields": [{
+          "key": "maverick",
+          "type": "tag",
+          "data": true
+        }, {
           "key": "graphic",
           "type": "tile",
-          "data": 59
+          "data": 66
         }, {
           "key": "colors",
           "type": "colors",
           "data": {
-            "bg": 1,
-            "fg": 3
+            "bg": 0,
+            "fg": 5
           }
         }, {
           "key": "solid",
           "type": "tag",
           "data": true
-        }, {
-          "key": "say",
-          "type": "dialogue",
-          "data": "hello"
         }]
       }, {
         "id": 59,
-        "position": [5, 10],
+        "position": [8, 1],
         "fields": [{
+          "key": "vance",
+          "type": "tag",
+          "data": true
+        }, {
           "key": "graphic",
           "type": "tile",
           "data": 60
@@ -249,22 +264,22 @@ TURN_EVENT(avatar, "down")
           "key": "colors",
           "type": "colors",
           "data": {
-            "bg": 1,
-            "fg": 3
+            "bg": 0,
+            "fg": 4
           }
         }, {
           "key": "solid",
           "type": "tag",
           "data": true
-        }, {
-          "key": "say",
-          "type": "dialogue",
-          "data": "hello"
         }]
       }, {
         "id": 60,
-        "position": [8, 10],
+        "position": [11, 1],
         "fields": [{
+          "key": "phylline",
+          "type": "tag",
+          "data": true
+        }, {
           "key": "graphic",
           "type": "tile",
           "data": 61
@@ -272,40 +287,59 @@ TURN_EVENT(avatar, "down")
           "key": "colors",
           "type": "colors",
           "data": {
-            "bg": 1,
-            "fg": 3
+            "bg": 0,
+            "fg": 6
           }
         }, {
           "key": "solid",
           "type": "tag",
           "data": true
-        }, {
-          "key": "say",
-          "type": "dialogue",
-          "data": "hello"
         }]
       }, {
         "id": 61,
-        "position": [11, 9],
+        "position": [14, 1],
         "fields": [{
+          "key": "miss",
+          "type": "tag",
+          "data": true
+        }, {
           "key": "graphic",
           "type": "tile",
-          "data": 62
+          "data": 71
         }, {
           "key": "colors",
           "type": "colors",
           "data": {
-            "bg": 1,
-            "fg": 3
+            "bg": 0,
+            "fg": 2
           }
         }, {
           "key": "solid",
           "type": "tag",
           "data": true
+        }]
+      }, {
+        "id": 62,
+        "position": [2, 1],
+        "fields": [{
+          "key": "reginald",
+          "type": "text",
+          "data": ""
         }, {
-          "key": "say",
-          "type": "dialogue",
-          "data": "hello"
+          "key": "graphic",
+          "type": "tile",
+          "data": 59
+        }, {
+          "key": "colors",
+          "type": "colors",
+          "data": {
+            "bg": 0,
+            "fg": 7
+          }
+        }, {
+          "key": "solid",
+          "type": "tag",
+          "data": true
         }]
       }],
       "backmap": [
